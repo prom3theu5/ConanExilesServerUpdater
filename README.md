@@ -7,6 +7,8 @@ What can this do?:
  * Announce new update to a Discord and Twitch channel (x) Minutes before an update will take place
  * Update the Server
  * Auto Restart the Server after an Update
+ * Auto Restart Server on Crash
+ * Auto Restart Server After X Hours
 
 
 *The updater needs write access to your steamcmd folder, so setup windows permissions for this. This is because appcache has to be removed prior to an update check to ensure the correct LIVE build version is returned from steam.*
@@ -16,13 +18,13 @@ Configuration is handled in the config.json file:
 ```json
 {
   "Twitch": {
-    "OAuth": "#twitch-oauth-here#",
-    "Username": "#bot-name#",
-    "Channel": "#twitch-channel#"
+    "OAuth": "#twitchoauthhere#",
+    "Username": "#botname#",
+    "Channel": "#twitchchannel#"
   },
   "Discord": {
     "DiscordToken": "#discord-bot-token#",
-    "ChannelId": 1234567890000
+    "ChannelId": 276147691820417024
   },
   "Conan": {
     "FolderPath": "c:\\conan\\",
@@ -35,6 +37,10 @@ Configuration is handled in the config.json file:
     "AnnounceMinutesBefore": 5,
     "UpdateCheckInterval": 5,
     "InstalledBuild": 1612541
+  },
+  "General": {
+    "ShouldRestartConanOnNotRunning": false,
+    "RestartServerAfterHours": 0
   }
 }
 ```
