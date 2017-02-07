@@ -121,7 +121,7 @@ namespace ConanExilesUpdater.Services
             var processStartInfo = new ProcessStartInfo
             {
                 FileName = $"{_settings.Conan.FolderPath}ConanSandboxServer.exe",
-                Arguments = $"{_settings.Conan.StartupParameters} -nosteamclient -game -server -log",
+                Arguments = $"{_settings.Conan.StartupParameters} -log",
                 RedirectStandardOutput = false,
                 UseShellExecute = false
             };
