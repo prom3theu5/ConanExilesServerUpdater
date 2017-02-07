@@ -9,7 +9,7 @@ What can this do?:
  * Auto Restart the Server after an Update
 
 
-### The updater needs write access to your steamcmd folder, so setup windows permissions for this. This is because appcache has to be removed prior to an update check to ensure the correct LIVE build version is returned from steam.
+*The updater needs write access to your steamcmd folder, so setup windows permissions for this. This is because appcache has to be removed prior to an update check to ensure the correct LIVE build version is returned from steam.
 
 Configuration is handled in the config.json file:
 
