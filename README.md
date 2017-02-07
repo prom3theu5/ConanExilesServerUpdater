@@ -1,1 +1,70 @@
-conan
+# Conan Exiles Dedicated Server Updater / Service
+
+What can this do?:
+
+ * Clean shutdown your current server (Using AHK until we get RCON)
+ * Update Check Interval (in Minutes)
+ * Announce new update to a Discord and Twitch channel (x) Minutes before an update will take place
+ * Update the Server
+ * Auto Restart the Server after an Update
+
+
+Configuration is handled in the config.json file:
+
+```json
+{
+  "Twitch": {
+    "OAuth": "#twitch-oauth-here#",
+    "Username": "#bot-name#",
+    "Channel": "#twitch-channel#"
+  },
+  "Discord": {
+    "DiscordToken": "#discord-bot-token#",
+    "ChannelId": 1234567890000
+  },
+  "Conan": {
+    "FolderPath": "c:\\conan\\",
+    "StartupParameters": "ConanSandbox?Multihome=#ip#?GameServerPort=27015?GameServerQueryPort=27016?MaxPlayers=70?listen?AdminPassword=#adminpassword#?ServerPassword=#serverpassword#"
+  },
+  "Update": {
+    "SteamCmdPath": "c:\\steamcmd\\",
+    "AnnounceDiscord": false,
+    "AnnounceTwitch": false,
+    "AnnounceMinutesBefore": 5,
+    "UpdateCheckInterval": 5,
+    "InstalledBuild": 1612541
+  }
+}
+```
+
+### To Install / Uninstall as a Service
+Open a cmd window in the directory. 
+Then run:
+```
+ConanExilesUpdater.exe install
+```
+or
+```
+ConanExilesUpdater.exe uninstall
+```
+
+The Executable can control the service too. You can start and stop it with
+```
+ConanExilesUpdater.exe start
+```
+or
+```
+ConanExilesUpdater.exe stop
+```
+
+
+### Stuff used to make this:
+
+ * [Serilog](https://github.com/serilog/serilog) Simple .NET logging with fully-structured events.
+ * [Serilog.Sinks.Literate](https://github.com/serilog/serilog-sinks-literate) Readable console window for Serilog.
+ * [Serilog.Sinks.RollingFile](https://github.com/serilog/serilog-sinks-rollingfile) Rolling log file output for Serilog.
+ * [TopShelf](https://github.com/Topshelf/Topshelf) Allows the application to be installed as a windows service.
+ * [Discord.Net](https://github.com/RogueException/Discord.Net) Discord Client used for discord announcements.
+ * [TwitchLib](https://github.com/swiftyspiffy/TwitchLib) Twitch Client used for twitch announcements.
+ * [AutoHotKey.Interop](https://github.com/amazing-andrew/AutoHotkey.Interop) Used to cleanly shutdown the server with Control+C until we get RCON support.
+ * [Costura](https://github.com/Fody/Costura) Used to Embed all these libraries as resources in the final executable.
