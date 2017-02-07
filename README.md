@@ -57,6 +57,9 @@ or
 ConanExilesUpdater.exe stop
 ```
 
+### Donations
+This work is all free, but if you wish to buy me a beer as a thank you you can donate: [Here](https://streamtip.com/t/prom3theu5) =)
+
 
 ### Stuff used to make this:
 
