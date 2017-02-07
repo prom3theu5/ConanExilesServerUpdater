@@ -45,7 +45,7 @@ namespace ConanExilesUpdater.Services
                                 if (_settings.Update.AnnounceTwitch || _settings.Update.AnnounceDiscord)
                                 {
                                     var runningTime = DateTime.Now - process.StartTime;
-                                    var announceMessage = $"Conan Server Automatic Restarts are set to run every {_settings.General.RestartServerAfterHours} Hours. The server has been up for {runningTime.TotalHours} H {runningTime.Minutes} M. The Server will restart in {_settings.Update.AnnounceMinutesBefore} minutes.";
+                                    var announceMessage = $"Conan Server Automatic Restarts are set to run every {_settings.General.RestartServerAfterHours} Hours. The server has been up for {runningTime.TotalHours} H {runningTime.Minutes} M. The Server will restart in {_settings.Update.AnnounceMinutesBefore} {(_settings.Update.AnnounceMinutesBefore == 1 ? "Minute" : "Minutes")}.";
                                     if (_discordClient != null)
                                         _discordClient.SendMessage(announceMessage);
                                     if (_twitchService != null)

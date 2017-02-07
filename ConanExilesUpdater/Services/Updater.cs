@@ -194,7 +194,7 @@ namespace ConanExilesUpdater.Services
                 }
 
                 Log.Information("Detected SteamVersion as: {steamversion}. Your version is: {localVersion} An Update is required.", steamVersion, _settings.Update.InstalledBuild.ToString());
-                var message = $"New Conan Server Version Detected, Build: {steamVersion}. Server Update and Restart in 5 minutes.";
+                var message = $"New Conan Server Version Detected, Build: {steamVersion}. Server Update and Restart in {_settings.Update.AnnounceMinutesBefore} {(_settings.Update.AnnounceMinutesBefore == 1 ? "Minute" : "Minutes")}.";
                 if (_settings.Update.AnnounceTwitch)
                 {
                     if (_twitchClient != null)
