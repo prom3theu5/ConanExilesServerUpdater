@@ -1,4 +1,7 @@
-﻿using ConanExilesUpdater.Services;
+﻿using System;
+using ConanExilesUpdater.Models;
+using ConanExilesUpdater.Services;
+using Newtonsoft.Json;
 using Serilog;
 using Topshelf;
 
@@ -6,21 +9,54 @@ namespace ConanExilesUpdater
 {
     class Program
     {
-        public static Updater Updater { get; private set; }
+        #region Properties
+
+        private static Updater _updater;
+        private static Settings _settings;
+        public static string StartupPath;
+
+        #endregion
 
         static void Main(string[] args)
         {
+            StartupPath = System.IO.Path.GetDirectoryName(Environment.GetCommandLineArgs()[0]);
+
+            #region Setup Logging
+
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.LiterateConsole()
-                .WriteTo.RollingFile("log-{Date}.txt", buffered: true)
+                .WriteTo.RollingFile("log-{Date}.txt")
                 .CreateLogger();
 
-            Updater = new Updater();
+            #endregion
+
+            #region Load Settings
+
+            if (System.IO.File.Exists("config.json"))
+            {
+                _settings = JsonConvert.DeserializeObject<Settings>(System.IO.File.ReadAllText("config.json"));
+                Log.Information("Loaded settings from file: {settings}", "config.json");
+            }
+            else
+            {
+                Utils.SaveSettings(StartupPath, new Settings());
+                Log.Information("No settings existed. Created new settings file: {settings}", "config.json");
+            }
+
+            #endregion
+
+            #region Updater Instance
+
+            _updater = new Updater(_settings);
+
+            #endregion
+
+            #region TopShelf Service
 
             HostFactory.Run(x => {
                 x.Service<Updater>(updater => {
-                    updater.ConstructUsing(() => Updater);
+                    updater.ConstructUsing(() => _updater);
                     updater.WhenStarted(async b => await b.StartUpdater());
                     updater.WhenStopped(b => b.StopUpdater());
                 });
@@ -36,6 +72,8 @@ namespace ConanExilesUpdater
                     r.RestartService(0);
                 });
             });
+
+            #endregion
         }
     }
 }
