@@ -1,4 +1,5 @@
-﻿using ConanExilesUpdater.Models;
+﻿using AutoHotkey.Interop;
+using ConanExilesUpdater.Models;
 using Newtonsoft.Json;
 
 namespace ConanExilesUpdater
@@ -16,6 +17,17 @@ namespace ConanExilesUpdater
                     jsonWriter.WriteRaw(JsonConvert.SerializeObject(_settings, Formatting.Indented));
                 }
             }
+        }
+
+        #endregion
+
+        #region AutoHotKey Terminate Server
+
+        public static void TerminateServer()
+        {
+            var ahk = AutoHotkeyEngine.Instance;
+            var script = "ControlSend, , ^C, Conan Exiles - press Ctrl+C to shutdown";
+            ahk.ExecRaw(script);
         }
 
         #endregion

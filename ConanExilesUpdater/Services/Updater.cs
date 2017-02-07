@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoHotkey.Interop;
 using ConanExilesUpdater.Models;
 using Serilog;
 
@@ -18,6 +17,7 @@ namespace ConanExilesUpdater.Services
         private Settings _settings;
         private TwitchService _twitchClient;
         private DiscordService _discordClient;
+        private GeneralServices _general;
         private bool _runUpdates = true;
         #endregion
 
@@ -41,6 +41,8 @@ namespace ConanExilesUpdater.Services
                     _twitchClient = new TwitchService(_settings);
                 if (_settings.Update.AnnounceDiscord)
                     _discordClient = new DiscordService(_settings);
+                _general = new GeneralServices(_settings, _discordClient, _twitchClient);
+                _general.StartServices();
                 RunUpdateChecks();
                 _quitEvent.WaitOne();
             });
@@ -80,6 +82,7 @@ namespace ConanExilesUpdater.Services
                     var doUpdate = DetectUpdate();
                     if (doUpdate)
                     {
+                        _general.StopServices();
                         var ready = await DoUpdate();
                         if (ready)
                             StartConan();
@@ -95,15 +98,8 @@ namespace ConanExilesUpdater.Services
                 await Task.Delay(_settings.Update.AnnounceMinutesBefore * 1000 * 60);
             }
 
-            //foreach (Process procToKill in Process.GetProcesses().Where(c => c.ProcessName.Contains("ConanSandbox")))
-            //{
-            //    procToKill.Kill();
-            //}
-
             // Until we have RCON - Use AutoHotKey.Interop to send ^C to the server for a clean shutdown.
-            var ahk = AutoHotkeyEngine.Instance;
-            var script = "ControlSend, , ^C, Conan Exiles - press Ctrl+C to shutdown";
-            ahk.ExecRaw(script);
+            Utils.TerminateServer();
 
             // Wait 30 seconds for a clean shutdown
             await Task.Delay(30 * 1000);
@@ -130,6 +126,7 @@ namespace ConanExilesUpdater.Services
                 UseShellExecute = false
             };
             Process.Start(processStartInfo);
+            _general.StartServices();
         }
 
         private bool DetectUpdate()

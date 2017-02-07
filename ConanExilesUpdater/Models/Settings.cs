@@ -6,6 +6,7 @@
         public Discord Discord { get; set; }
         public Conan Conan { get; set; }
         public Update Update { get; set; }
+        public General General { get; set; }
 
         public Settings()
         {
@@ -13,6 +14,7 @@
             Discord = new Discord();
             Conan = new Conan();
             Update = new Update();
+            General = new General();
         }
     }
 
@@ -51,5 +53,18 @@
             UpdateCheckInterval = 300;
             AnnounceMinutesBefore = 300;
         }
+    }
+
+    public class General
+    {
+        public bool ShouldRestartConanOnNotRunning { get; set; }
+        public int RestartServerAfterHours { get; set; }
+
+        public General()
+        {
+            ShouldRestartConanOnNotRunning = true;
+            RestartServerAfterHours = 0;
+        }
+
     }
 }
