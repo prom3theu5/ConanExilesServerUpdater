@@ -51,7 +51,7 @@ namespace ConanExilesUpdater.Services
                 }, _token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
                 tasks.Add(rP);
             }
-
+            Task.Run(()=>{
             try
             {
                 Task.WaitAll(tasks.ToArray());
@@ -64,6 +64,7 @@ namespace ConanExilesUpdater.Services
             {
                 Log.Error("Exception: {exception} in General Services", e.Message);
             }
+            });
         }
 
         public void StopServices()
