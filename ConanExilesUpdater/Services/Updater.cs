@@ -7,6 +7,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using ConanExilesUpdater.Models;
+using Octokit;
 using Serilog;
 
 namespace ConanExilesUpdater.Services
@@ -21,6 +22,7 @@ namespace ConanExilesUpdater.Services
         private DiscordService _discordClient;
         private GeneralServices _general;
         private bool _runUpdates = true;
+        private const double _version = 1.7;
         #endregion
 
         #region Constructor
@@ -39,7 +41,9 @@ namespace ConanExilesUpdater.Services
             _quitEvent = new ManualResetEvent(false);
             await Task.Run(() => {
                 Log.Information("ConanExilesUpdater Started Running {DateAndTime}", DateTime.UtcNow);
-                
+
+                CheckForUpdate();
+
                 if (_settings.Update.ShouldInstallSteamCmdIfMissing)
                 {
                     InstallSteamCmd();
@@ -55,7 +59,12 @@ namespace ConanExilesUpdater.Services
                     var process = Process.GetProcesses().Where(c => c.ProcessName.Contains("ConanSandboxServer")).FirstOrDefault();
                     if (process == null)
                     {
-                        DoServerUpdateInstall();
+                        var doUpdate = DetectUpdate();
+                        if (doUpdate)
+                        {
+                            DoServerUpdateInstall();
+                            StartConan();
+                        }
                     }
                 }
 
@@ -69,6 +78,26 @@ namespace ConanExilesUpdater.Services
                 _quitEvent.WaitOne();
             });
             return true;
+        }
+
+        private async void CheckForUpdate()
+        {
+            try
+            {
+                var github = new GitHubClient(new ProductHeaderValue("ConanExilesServerUpdater"));
+                var releases = await github.Repository.Release.GetAll("prom3theu5", "ConanExilesServerUpdater");
+                var latest = releases[0];
+                var version = Convert.ToDouble(latest.TagName);
+                if (_version < version)
+                {
+                    Log.Warning("Version {newversion} detected on github. Please download from: {releaseurl}", version, latest.HtmlUrl);
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error checking github for updates: {Exception}", e.Message);
+            }
+
         }
 
         private void InstallConanServer()

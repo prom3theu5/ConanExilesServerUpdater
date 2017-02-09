@@ -39,12 +39,18 @@
         public bool RaidingProtectionHoursEnabled { get; set; }
         public int RaidingStartHour { get; set; }
         public int RaidingLengthInHours { get; set; }
-
+        public bool AvatarsEnabledCertainHours { get; set; }
+        public int AvatarActivationHour { get; set; }
+        public int AvatarsActiveLengthInHours { get; set; }
+        
         public Conan()
         {
             RaidingLengthInHours = 0;
             RaidingProtectionHoursEnabled = false;
             RaidingStartHour = 0;
+            AvatarsEnabledCertainHours = false;
+            AvatarActivationHour = 0;
+            AvatarsActiveLengthInHours = 0;
         }
     }
 

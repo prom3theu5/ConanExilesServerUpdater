@@ -17,6 +17,7 @@ namespace ConanExilesUpdater.Services
         private CancellationToken _token;
         private readonly DiscordService _discordClient;
         private readonly TwitchService _twitchService;
+        private INIFile _serverSettings;
 
         public GeneralServices(Settings settings, DiscordService discord, TwitchService twitch)
         {
@@ -47,23 +48,24 @@ namespace ConanExilesUpdater.Services
                 Log.Information("Setting up Raiding Hours Protection");
                 Task rP = Task.Factory.StartNew(() =>
                 {
-                    RaidingProtection(_token);
+                    Protections(_token);
                 }, _token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
                 tasks.Add(rP);
             }
-            Task.Run(()=>{
-            try
+            Task.Run(() =>
             {
-                Task.WaitAll(tasks.ToArray());
-            }
-            catch (AggregateException ae)
-            {
-                Log.Error("Inner Task Exception: {exception} in General Services", ae.Message);
-            }
-            catch (Exception e)
-            {
-                Log.Error("Exception: {exception} in General Services", e.Message);
-            }
+                try
+                {
+                    Task.WaitAll(tasks.ToArray());
+                }
+                catch (AggregateException ae)
+                {
+                    Log.Error("Inner Task Exception: {exception} in General Services", ae.Message);
+                }
+                catch (Exception e)
+                {
+                    Log.Error("Exception: {exception} in General Services", e.Message);
+                }
             });
         }
 
@@ -139,9 +141,9 @@ namespace ConanExilesUpdater.Services
         }
         #endregion
 
-        #region Raiding Protection
+        #region Protections
 
-        private void RaidingProtection(CancellationToken token)
+        private void Protections(CancellationToken token)
         {
             var configFolder = $"{_settings.Conan.FolderPath}ConanSandbox\\Saved\\Config\\WindowsServer";
             if (!Directory.Exists(configFolder))
@@ -150,23 +152,28 @@ namespace ConanExilesUpdater.Services
                 return;
             }
             var serverSettings = new INIFile(Path.Combine(configFolder, "ServerSettings.ini"));
-            bool enabled = false;
+            bool raidingEnabled = false;
+            bool avatarsEnabled = false;
             while (!token.IsCancellationRequested)
             {
                 Thread.Sleep(60 * 1000);
+                var changed = false;
+                serverSettings.Refresh();
                 var dt = DateTime.Now;
-                if (!enabled)
+
+                #region Raiding
+
+                if (!raidingEnabled)
                 {
                     if (dt.Hour == _settings.Conan.RaidingStartHour)
                     {
-                        serverSettings.Refresh();
                         var setting = serverSettings.GetValue("ServerSettings", "CanDamagePlayerOwnedStructures", "False");
                         if (setting.Equals("False"))
                         {
                             serverSettings.SetValue("ServerSettings", "CanDamagePlayerOwnedStructures", "True");
-                            serverSettings.Flush();
                         }
-                        enabled = true;
+                        raidingEnabled = true;
+                        changed = true;
                         Log.Information("Successfully Enabled Building Raiding for {length} hours", _settings.Conan.RaidingLengthInHours);
                     }
                 }
@@ -174,21 +181,57 @@ namespace ConanExilesUpdater.Services
                 {
                     if (dt.AddHours(_settings.Conan.RaidingLengthInHours) <= dt)
                     {
-                        serverSettings.Refresh();
                         var setting = serverSettings.GetValue("ServerSettings", "CanDamagePlayerOwnedStructures", "True");
                         if (setting.Equals("True"))
                         {
                             serverSettings.SetValue("ServerSettings", "CanDamagePlayerOwnedStructures", "False");
-                            serverSettings.Flush();
                         }
-                        enabled = false;
+                        raidingEnabled = false;
+                        changed = true;
                         Log.Information("Successfully disabled Building raiding until {hour}:00", _settings.Conan.RaidingStartHour);
                     }
-
                 }
+
+                #endregion
+
+                #region Avatar Checks
+
+                if (!avatarsEnabled)
+                {
+                    if (dt.Hour == _settings.Conan.AvatarActivationHour)
+                    {
+                        var setting = serverSettings.GetValue("ServerSettings", "AvatarsDisabled", "False");
+                        if (setting.Equals("False"))
+                        {
+                            serverSettings.SetValue("ServerSettings", "AvatarsDisabled", "True");
+                        }
+                        avatarsEnabled = true;
+                        changed = true;
+                        Log.Information("Successfully Enabled Avatars for {length} hours", _settings.Conan.AvatarsActiveLengthInHours);
+                    }
+                }
+                else
+                {
+                    if (dt.AddHours(_settings.Conan.AvatarsActiveLengthInHours) <= dt)
+                    {
+                        var setting = serverSettings.GetValue("ServerSettings", "AvatarsDisabled", "True");
+                        if (setting.Equals("True"))
+                        {
+                            serverSettings.SetValue("ServerSettings", "AvatarsDisabled", "False");
+                        }
+                        avatarsEnabled = false;
+                        changed = true;
+                        Log.Information("Successfully disabled Avatars {hour}:00", _settings.Conan.AvatarActivationHour);
+                    }
+                }
+                #endregion
+
+                if (changed)
+                  serverSettings.Flush();
             }
         }
 
         #endregion
+
     }
 }

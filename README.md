@@ -35,7 +35,10 @@ Configuration is handled in the config.json file:
     "StartupParameters": "ConanSandBox?Multihome=%IP%?GameServerPort=%GamePort%?GameServerQueryPort=%QueryPort%?MaxPlayers=%MaxPlayers%?listen?AdminPassword=%AdminPass%",
     "RaidingProtectionHoursEnabled": true,
     "RaidingStartHour": 18,
-    "RaidingLengthInHours": 5
+    "RaidingLengthInHours": 5,
+	"AvatarsEnabledCertainHours": false,
+    "AvatarActivationHour": 0,
+    "AvatarsActiveLengthInHours": 0
   },
   "Update": {
     "ShouldInstallSteamCmdIfMissing": false,
