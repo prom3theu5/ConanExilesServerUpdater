@@ -9,6 +9,9 @@ What can this do?:
  * Auto Restart the Server after an Update
  * Auto Restart Server on Crash
  * Auto Restart Server After X Hours
+ * Raiding Protection (Enable Hours that Raiding is allowed)
+ * Auto Install SteamCMD if not Found
+ * Auto Install Conan Server if not found
 
 
 *The updater needs write access to your steamcmd folder, so setup windows permissions for this. This is because appcache has to be removed prior to an update check to ensure the correct LIVE build version is returned from steam.*
@@ -18,28 +21,31 @@ Configuration is handled in the config.json file:
 ```json
 {
   "Twitch": {
-    "OAuth": "#twitchoauthhere#",
-    "Username": "#botname#",
-    "Channel": "#twitchchannel#"
+    "OAuth": "",
+    "Username": "",
+    "Channel": ""
   },
   "Discord": {
-    "DiscordToken": "#discord-bot-token#",
-    "ChannelId": 276147691820417024
+    "DiscordToken": "",
+    "ChannelId": 0
   },
   "Conan": {
     "FolderPath": "c:\\conanserver\\",
     "Executable": "ConanSandboxServer.exe",
-    "StartupParameters": "ConanSandbox?Multihome=#ip#?GameServerPort=27015?GameServerQueryPort=27016?MaxPlayers=70?listen?AdminPassword=#adminpassword#?ServerPassword=#serverpassword#"
+    "StartupParameters": "",
+    "RaidingProtectionHoursEnabled": true,
+    "RaidingStartHour": 18,
+    "RaidingLengthInHours": 5
   },
   "Update": {
-    "ShouldInstallSteamCmdIfMissing": true,
-    "ShouldInstallConanServerIfMissing": true,
+    "ShouldInstallSteamCmdIfMissing": false,
+    "ShouldInstallConanServerIfMissing": false,
     "SteamCmdPath": "c:\\steamcmd\\",
     "AnnounceDiscord": false,
     "AnnounceTwitch": false,
     "AnnounceMinutesBefore": 5,
     "UpdateCheckInterval": 5,
-    "InstalledBuild": 1612541
+    "InstalledBuild": 0
   },
   "General": {
     "ShouldRestartConanOnNotRunning": true,
