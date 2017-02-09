@@ -80,15 +80,10 @@ namespace ConanExilesUpdater.Services
         #region Monitor Server Running
         private void MonitorServerRunning(CancellationToken token)
         {
-            while (true)
+            while (!token.IsCancellationRequested)
             {
                 try
                 {
-                    if (token.IsCancellationRequested)
-                    {
-                        token.ThrowIfCancellationRequested();
-                    }
-
                     Thread.Sleep(30 * 1000);
                     var process = Process.GetProcesses().Where(c => c.ProcessName.Contains("ConanSandboxServer")).FirstOrDefault();
                     if (process != null)
@@ -156,13 +151,8 @@ namespace ConanExilesUpdater.Services
             }
             var serverSettings = new INIFile(Path.Combine(configFolder, "ServerSettings.ini"));
             bool enabled = false;
-            while (true)
+            while (!token.IsCancellationRequested)
             {
-                if (token.IsCancellationRequested)
-                {
-                    token.ThrowIfCancellationRequested();
-                }
-
                 Thread.Sleep(60 * 1000);
                 var dt = DateTime.Now;
                 if (!enabled)
