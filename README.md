@@ -45,7 +45,8 @@ Configuration is handled in the config.json file:
     "AnnounceTwitch": false,
     "AnnounceMinutesBefore": 5,
     "UpdateCheckInterval": 5,
-    "InstalledBuild": 0
+    "InstalledBuild": 0,
+	"UpdateOnLaunch": false
   },
   "General": {
     "ShouldRestartConanOnNotRunning": true,

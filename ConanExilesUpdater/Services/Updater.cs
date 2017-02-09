@@ -39,7 +39,7 @@ namespace ConanExilesUpdater.Services
             _quitEvent = new ManualResetEvent(false);
             await Task.Run(() => {
                 Log.Information("ConanExilesUpdater Started Running {DateAndTime}", DateTime.UtcNow);
-
+                
                 if (_settings.Update.ShouldInstallSteamCmdIfMissing)
                 {
                     InstallSteamCmd();
@@ -48,6 +48,13 @@ namespace ConanExilesUpdater.Services
                 if (_settings.Update.ShouldInstallConanServerIfMissing)
                 {
                     InstallConanServer();
+                }
+
+                if (_settings.Update.UpdateOnLaunch)
+                {
+                    var process = Process.GetProcesses().Where(c => c.ProcessName.Contains("ConanSandboxServer")).FirstOrDefault();
+                    if (process != null) return;
+                    DoServerUpdateInstall();
                 }
 
                 if (_settings.Update.AnnounceTwitch)

@@ -58,6 +58,7 @@
         public int AnnounceMinutesBefore { get; set; }
         public int UpdateCheckInterval { get; set; }
         public int InstalledBuild { get; set; }
+        public bool UpdateOnLaunch { get; set; }
 
         public Update()
         {
@@ -67,6 +68,7 @@
             AnnounceMinutesBefore = 5;
             ShouldInstallSteamCmdIfMissing = false;
             ShouldInstallConanServerIfMissing = false;
+            UpdateOnLaunch = false;
         }
     }
 
