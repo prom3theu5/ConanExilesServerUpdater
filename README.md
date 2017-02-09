@@ -10,6 +10,7 @@ What can this do?:
  * Auto Restart Server on Crash
  * Auto Restart Server After X Hours
  * Raiding Protection (Enable Hours that Raiding is allowed)
+ * Avatar Protection (Enable Hours that Summoning Avatars is allowed)
  * Auto Install SteamCMD if not Found
  * Auto Install Conan Server if not found
 
@@ -91,8 +92,9 @@ This work is all free, but if you wish to buy me a beer as a thank you you can d
  * [Discord.Net](https://github.com/RogueException/Discord.Net) Discord Client used for discord announcements.
  * [TwitchLib](https://github.com/swiftyspiffy/TwitchLib) Twitch Client used for twitch announcements.
  * [AutoHotKey.Interop](https://github.com/amazing-andrew/AutoHotkey.Interop) Used to cleanly shutdown the server with Control+C until we get RCON support.
+ * [Octokit.net](https://github.com/octokit/octokit.net) Github Api wrapper to check you have the latest release :)
  * [Costura](https://github.com/Fody/Costura) Used to Embed all these libraries as resources in the final executable.
- 
+  
  
  ### Testers / Debuggers
  
