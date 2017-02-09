@@ -32,7 +32,7 @@ Configuration is handled in the config.json file:
   "Conan": {
     "FolderPath": "c:\\conanserver\\",
     "Executable": "ConanSandboxServer.exe",
-    "StartupParameters": "",
+    "StartupParameters": "ConanSandBox?Multihome=%IP%?GameServerPort=%GamePort%?GameServerQueryPort=%QueryPort%?MaxPlayers=%MaxPlayers%?listen?AdminPassword=%AdminPass%",
     "RaidingProtectionHoursEnabled": true,
     "RaidingStartHour": 18,
     "RaidingLengthInHours": 5
