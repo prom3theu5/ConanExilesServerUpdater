@@ -53,8 +53,10 @@ namespace ConanExilesUpdater.Services
                 if (_settings.Update.UpdateOnLaunch)
                 {
                     var process = Process.GetProcesses().Where(c => c.ProcessName.Contains("ConanSandboxServer")).FirstOrDefault();
-                    if (process != null) return;
-                    DoServerUpdateInstall();
+                    if (process == null)
+                    {
+                        DoServerUpdateInstall();
+                    }
                 }
 
                 if (_settings.Update.AnnounceTwitch)
