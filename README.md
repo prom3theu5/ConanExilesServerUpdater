@@ -89,3 +89,8 @@ This work is all free, but if you wish to buy me a beer as a thank you you can d
  * [TwitchLib](https://github.com/swiftyspiffy/TwitchLib) Twitch Client used for twitch announcements.
  * [AutoHotKey.Interop](https://github.com/amazing-andrew/AutoHotkey.Interop) Used to cleanly shutdown the server with Control+C until we get RCON support.
  * [Costura](https://github.com/Fody/Costura) Used to Embed all these libraries as resources in the final executable.
+ 
+ 
+ ### Testers / Debuggers
+ 
+ Aoxmodeus
