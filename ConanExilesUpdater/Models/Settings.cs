@@ -36,6 +36,16 @@
         public string FolderPath { get; set; }
         public string Executable { get; set; }
         public string StartupParameters { get; set; }
+        public bool RaidingProtectionHoursEnabled { get; set; }
+        public int RaidingStartHour { get; set; }
+        public int RaidingLengthInHours { get; set; }
+
+        public Conan()
+        {
+            RaidingLengthInHours = 0;
+            RaidingProtectionHoursEnabled = false;
+            RaidingStartHour = 0;
+        }
     }
 
     public class Update

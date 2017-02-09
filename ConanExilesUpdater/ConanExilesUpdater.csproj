@@ -120,6 +120,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\IniFile.cs" />
     <Compile Include="Models\Settings.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -127,7 +128,7 @@
     <Compile Include="Services\GeneralServices.cs" />
     <Compile Include="Services\TwitchService.cs" />
     <Compile Include="Services\Updater.cs" />
-    <Compile Include="Utils.cs" />
+    <Compile Include="Helpers\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
