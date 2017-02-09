@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using ConanExilesUpdater.Models;
@@ -37,6 +39,17 @@ namespace ConanExilesUpdater.Services
             _quitEvent = new ManualResetEvent(false);
             await Task.Run(() => {
                 Log.Information("ConanExilesUpdater Started Running {DateAndTime}", DateTime.UtcNow);
+
+                if (_settings.Update.ShouldInstallSteamCmdIfMissing)
+                {
+                    InstallSteamCmd();
+                }
+
+                if (_settings.Update.ShouldInstallConanServerIfMissing)
+                {
+                    InstallConanServer();
+                }
+
                 if (_settings.Update.AnnounceTwitch)
                     _twitchClient = new TwitchService(_settings);
                 if (_settings.Update.AnnounceDiscord)
@@ -48,7 +61,50 @@ namespace ConanExilesUpdater.Services
             });
             return true;
         }
-        
+
+        private void InstallConanServer()
+        {
+            if (!Directory.Exists(_settings.Conan.FolderPath))
+            {
+                Directory.CreateDirectory(_settings.Conan.FolderPath);
+                Log.Information("Conan server is missing. Installing it now");
+                DoServerUpdateInstall();
+            }
+        }
+
+        private void InstallSteamCmd()
+        {
+            try
+            {
+                if (!Directory.Exists(_settings.Update.SteamCmdPath))
+                {
+                    Log.Information("SteamCMD Missing. Downloading Now");
+                    Directory.CreateDirectory(_settings.Update.SteamCmdPath);
+                    using (var wc = new WebClient())
+                    {
+                        wc.DownloadFile(new Uri("https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip"), Path.Combine(_settings.Update.SteamCmdPath, "steamcmd.zip"));
+                        Log.Information("Extracting SteamCMD Zip");
+                        ZipFile.ExtractToDirectory(Path.Combine(_settings.Update.SteamCmdPath, "steamcmd.zip"), _settings.Update.SteamCmdPath);
+                        var processStartInfo = new ProcessStartInfo
+                        {
+                            FileName = $"{_settings.Update.SteamCmdPath}steamcmd.exe",
+                            Arguments = $"+quit",
+                            RedirectStandardOutput = false,
+                            UseShellExecute = false
+                        };
+                        var process = Process.Start(processStartInfo);
+                        process.WaitForExit();
+                        Log.Information("SteamCMD installed successfully");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error downloading SteamCMD: {Exception}", e.Message);
+            }
+
+        }
+
         #endregion
 
         #region Stop Method (Service Shutdown)
@@ -104,6 +160,13 @@ namespace ConanExilesUpdater.Services
             // Wait 30 seconds for a clean shutdown
             await Task.Delay(30 * 1000);
 
+            DoServerUpdateInstall();
+            
+            return true;
+        }
+
+        private void DoServerUpdateInstall()
+        {
             var processStartInfo = new ProcessStartInfo
             {
                 FileName = $"{_settings.Update.SteamCmdPath}steamcmd.exe",
@@ -113,14 +176,13 @@ namespace ConanExilesUpdater.Services
             };
             var process = Process.Start(processStartInfo);
             process.WaitForExit();
-            return true;
         }
 
         private void StartConan()
         {
             var processStartInfo = new ProcessStartInfo
             {
-                FileName = $"{_settings.Conan.FolderPath}ConanSandboxServer.exe",
+                FileName = $"{_settings.Conan.FolderPath}{_settings.Conan.Executable}",
                 Arguments = $"{_settings.Conan.StartupParameters} -log",
                 RedirectStandardOutput = false,
                 UseShellExecute = false

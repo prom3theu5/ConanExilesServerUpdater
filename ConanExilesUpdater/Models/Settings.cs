@@ -34,11 +34,14 @@
     public class Conan
     {
         public string FolderPath { get; set; }
+        public string Executable { get; set; }
         public string StartupParameters { get; set; }
     }
 
     public class Update
     {
+        public bool ShouldInstallSteamCmdIfMissing { get; set; }
+        public bool ShouldInstallConanServerIfMissing { get; set; }
         public string SteamCmdPath { get; set; }
         public bool AnnounceDiscord { get; set; }
         public bool AnnounceTwitch { get; set; }
@@ -50,8 +53,10 @@
         {
             AnnounceDiscord = false;
             AnnounceTwitch = false;
-            UpdateCheckInterval = 300;
-            AnnounceMinutesBefore = 300;
+            UpdateCheckInterval = 5;
+            AnnounceMinutesBefore = 5;
+            ShouldInstallSteamCmdIfMissing = false;
+            ShouldInstallConanServerIfMissing = false;
         }
     }
 
