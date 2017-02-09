@@ -27,10 +27,13 @@ Configuration is handled in the config.json file:
     "ChannelId": 276147691820417024
   },
   "Conan": {
-    "FolderPath": "c:\\conan\\",
+    "FolderPath": "c:\\conanserver\\",
+    "Executable": "ConanSandboxServer.exe",
     "StartupParameters": "ConanSandbox?Multihome=#ip#?GameServerPort=27015?GameServerQueryPort=27016?MaxPlayers=70?listen?AdminPassword=#adminpassword#?ServerPassword=#serverpassword#"
   },
   "Update": {
+    "ShouldInstallSteamCmdIfMissing": true,
+    "ShouldInstallConanServerIfMissing": true,
     "SteamCmdPath": "c:\\steamcmd\\",
     "AnnounceDiscord": false,
     "AnnounceTwitch": false,
@@ -39,7 +42,7 @@ Configuration is handled in the config.json file:
     "InstalledBuild": 1612541
   },
   "General": {
-    "ShouldRestartConanOnNotRunning": false,
+    "ShouldRestartConanOnNotRunning": true,
     "RestartServerAfterHours": 0
   }
 }
