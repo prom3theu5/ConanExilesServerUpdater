@@ -17,7 +17,6 @@ namespace ConanExilesUpdater.Services
         private CancellationToken _token;
         private readonly DiscordService _discordClient;
         private readonly TwitchService _twitchService;
-        private INIFile _serverSettings;
 
         public GeneralServices(Settings settings, DiscordService discord, TwitchService twitch)
         {
@@ -107,7 +106,16 @@ namespace ConanExilesUpdater.Services
                             {
                                 Thread.Sleep(_settings.Update.AnnounceMinutesBefore * 60 * 1000);
                             }
+                            bool exited = false;
+                            process.Exited += (sender, e) => { exited = true; };
                             Utils.TerminateServer();
+                            process.WaitForExit(30 * 1000);
+                            if (!exited)
+                                process.CloseMainWindow();
+                            Thread.Sleep(30 * 1000);
+                            if (!exited)
+                                process.Kill();
+                            Thread.Sleep(30 * 1000);
                             Log.Information("Server exceeded maximum specified running time, and a restart request was successfully made.");
                         }
                     }
@@ -139,6 +147,7 @@ namespace ConanExilesUpdater.Services
                 }
             }
         }
+        
         #endregion
 
         #region Protections
