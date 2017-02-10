@@ -24,7 +24,7 @@ Configuration is handled in the config.json file:
   "Twitch": {
     "OAuth": "",
     "Username": "",
-    "Channel": ""
+    "Channel": 0
   },
   "Discord": {
     "DiscordToken": "",
@@ -33,11 +33,11 @@ Configuration is handled in the config.json file:
   "Conan": {
     "FolderPath": "c:\\conanserver\\",
     "Executable": "ConanSandboxServer.exe",
-    "StartupParameters": "ConanSandBox?Multihome=%IP%?GameServerPort=%GamePort%?GameServerQueryPort=%QueryPort%?MaxPlayers=%MaxPlayers%?listen?AdminPassword=%AdminPass%",
-    "RaidingProtectionHoursEnabled": true,
-    "RaidingStartHour": 18,
-    "RaidingLengthInHours": 5,
-	"AvatarsEnabledCertainHours": false,
+    "StartupParameters": "ConanSandbox?Multihome=X.X.X.X?GameServerPort=27015?GameServerQueryPort=27016?ServerName=YOURSERVERNAME?MaxPlayers=50?listen?AdminPassword=YOURADMINPASSWORD -nosteamclient -game -server",
+    "RaidingProtectionHoursEnabled": false,
+    "RaidingStartHour": 0,
+    "RaidingLengthInHours": 0,
+    "AvatarsEnabledCertainHours": false,
     "AvatarActivationHour": 0,
     "AvatarsActiveLengthInHours": 0
   },
@@ -50,7 +50,7 @@ Configuration is handled in the config.json file:
     "AnnounceMinutesBefore": 5,
     "UpdateCheckInterval": 5,
     "InstalledBuild": 0,
-	"UpdateOnLaunch": false
+    "UpdateOnLaunch": true
   },
   "General": {
     "ShouldRestartConanOnNotRunning": true,
