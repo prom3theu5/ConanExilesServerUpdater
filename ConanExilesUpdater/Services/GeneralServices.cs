@@ -126,15 +126,13 @@ namespace ConanExilesUpdater.Services
                             {
                                 Thread.Sleep(_settings.Update.AnnounceMinutesBefore * 60 * 1000);
                             }
-                            bool exited = false;
-                            process.Exited += (sender, e) => { exited = true; };
+                            // Until we have RCON - Use AutoHotKey.Interop to send ^C to the server for a clean shutdown.
                             Utils.TerminateServer();
-                            process.WaitForExit(30 * 1000);
-                            if (!exited)
-                                process.CloseMainWindow();
                             Thread.Sleep(30 * 1000);
-                            if (!exited)
+                            process = Process.GetProcesses().Where(c => c.ProcessName.Contains("ConanSandboxServer")).FirstOrDefault();
+                            if (process != null)
                                 process.Kill();
+                            // Wait 30 seconds for a clean shutdown
                             Thread.Sleep(30 * 1000);
                             Log.Information("Server exceeded maximum specified running time, and a restart request was successfully made.");
                         }

@@ -24,7 +24,7 @@ namespace ConanExilesUpdater.Services
         private DiscordService _discordClient;
         private GeneralServices _general;
         private bool _runUpdates = true;
-        private const double _version = 1.9;
+        private const double _version = 1.91;
         #endregion
 
         #region Constructor
@@ -199,14 +199,10 @@ namespace ConanExilesUpdater.Services
             if (process != null)
             {
                 // Until we have RCON - Use AutoHotKey.Interop to send ^C to the server for a clean shutdown.
-                bool exited = false;
-                process.Exited += (sender, e) => { exited = true; };
                 Utils.TerminateServer();
-                process.WaitForExit(30 * 1000);
-                if (!exited)
-                    process.CloseMainWindow();
                 await Task.Delay(30 * 1000);
-                if (!exited)
+                process = Process.GetProcesses().Where(c => c.ProcessName.Contains("ConanSandboxServer")).FirstOrDefault();
+                if (process != null)
                     process.Kill();
                 // Wait 30 seconds for a clean shutdown
                 await Task.Delay(30 * 1000);
