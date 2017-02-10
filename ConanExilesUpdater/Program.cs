@@ -1,5 +1,6 @@
 ﻿using System;
 using ConanExilesUpdater.Models;
+using ConanExilesUpdater.Models.Messages;
 using ConanExilesUpdater.Services;
 using Newtonsoft.Json;
 using Serilog;
@@ -13,6 +14,7 @@ namespace ConanExilesUpdater
 
         private static Updater _updater;
         private static Settings _settings;
+        private static Messages _messages;
         public static string StartupPath;
 
         #endregion
@@ -31,7 +33,7 @@ namespace ConanExilesUpdater
 
             #endregion
 
-            #region Load Settings
+            #region Load Settings & Messages
 
             if (System.IO.File.Exists("config.json"))
             {
@@ -44,11 +46,22 @@ namespace ConanExilesUpdater
                 Log.Information("No settings existed. Created new settings file: {settings}", "config.json");
             }
 
+            if (System.IO.File.Exists("messages.json"))
+            {
+                _messages = JsonConvert.DeserializeObject<Messages>(System.IO.File.ReadAllText("messages.json"));
+                Log.Information("Loaded Messages from file: {settings}", "messages.json");
+            }
+            else
+            {
+                Utils.SaveMessages(StartupPath, new Messages());
+                Log.Information("No messages existed. Created new messages file: {settings}", "messages.json");
+            }
+
             #endregion
 
             #region Updater Instance
 
-            _updater = new Updater(_settings);
+            _updater = new Updater(_settings, _messages);
 
             #endregion
 

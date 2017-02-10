@@ -59,6 +59,37 @@ Configuration is handled in the config.json file:
 }
 ```
 
+Messages are handled in the file messages.json
+
+```json
+{
+  "Discord": {
+    "DiscordUpdateMessage": "@Everyone New Conan Server Version Detected, Build: @version. The server will restart in @announcebefore.",
+    "DiscordServerUptimeMessage": "The Conan server has been running for @uptime. Restarts are scheduled every @restartinterval. The server will restart in @countdownminutes.",
+    "DiscordServerRestartingMessage": "@Everyone The Conan server will restart in @countdownminutes. It will show online in a few minutes.",
+    "DiscordServerNotRunning": "@Everyone The Conan server was not detected as running. It will start now, and be online within 2-3 Minutes"
+  },
+  "Twitch": {
+    "TwitchUpdateMessage": "New Conan Server Version Detected, Build: @version. The server will restart in @announcebefore.",
+    "TwitchServerUptimeMessage": "The Conan server has been running for @uptime. Restarts are scheduled every @restartinterval. The server will restart in @countdownminutes.",
+    "TwitchServerRestartingMessage": "The Conan Server is now restarting. It will show online in a few minutes",
+    "TwitchServerNotRunning": "The Conan server was not detected as running. It will start now, and be online within 2-3 Minutes"
+  },
+  "AnnounceIntervalInMinutes": 0
+}
+```
+
+Here you have a couple of parameters that will be replaced then the messages send.
+You don't have to edit these messages, but if you'd like to you can, and must understand what these parameters are going to be replaced with.
+
+```
+@announcebefore -> This will be replaced with config.json value for announceperiod.
+@restartinterval -> The config.json Server Restart Interval
+@countdownminutes -> Countdown calculated from time now to expected shutdown.
+@uptime -> Calculated from when the server was launched to the current time.
+@version -> The new steam version detected.
+```
+
 ### To Install / Uninstall as a Service
 Open a cmd window in the directory. 
 Then run:

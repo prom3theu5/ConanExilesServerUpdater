@@ -7,22 +7,25 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Collections.Concurrent;
+using ConanExilesUpdater.Models.Messages;
 
 namespace ConanExilesUpdater.Services
 {
     public class GeneralServices
     {
         private readonly Settings _settings;
+        private readonly Messages _messages;
         private CancellationTokenSource _cancellationTokenSource;
         private CancellationToken _token;
         private readonly DiscordService _discordClient;
         private readonly TwitchService _twitchService;
 
-        public GeneralServices(Settings settings, DiscordService discord, TwitchService twitch)
+        public GeneralServices(Settings settings, DiscordService discord, TwitchService twitch, Messages messages)
         {
             _settings = settings;
             _discordClient = discord;
             _twitchService = twitch;
+            _messages = messages;
         }
 
         public void StartServices()
@@ -81,6 +84,8 @@ namespace ConanExilesUpdater.Services
         #region Monitor Server Running
         private void MonitorServerRunning(CancellationToken token)
         {
+            var _nextAnnounce = DateTime.Now.AddMinutes(_messages.AnnounceIntervalInMinutes);
+
             while (!token.IsCancellationRequested)
             {
                 try
@@ -90,17 +95,32 @@ namespace ConanExilesUpdater.Services
                     if (process != null)
                     {
                         var startTime = process.StartTime;
+
+                        if (_settings.Update.AnnounceTwitch || _settings.Update.AnnounceDiscord)
+                        {
+                            if (_messages.AnnounceIntervalInMinutes != 0)
+                            {
+                                if (_nextAnnounce <= DateTime.Now)
+                                {
+                                    if (_discordClient != null)
+                                        _discordClient.SendMessage(_messages.Discord.DiscordServerUptimeMessage.Replace("@countdownminutes", $"{_settings.Update.AnnounceMinutesBefore} {(_settings.Update.AnnounceMinutesBefore == 1 ? "Minute" : "Minutes")}").Replace("@uptime", $"{Math.Round(DateTime.Now.Subtract(process.StartTime).TotalHours, 2)} H {DateTime.Now.Subtract(process.StartTime).Minutes} M.").Replace("@restartinterval", $"{_messages.AnnounceIntervalInMinutes} {(_messages.AnnounceIntervalInMinutes == 1 ? "Minute" : "Minutes")}"));
+                                    if (_twitchService != null)
+                                        _twitchService.SendMessage(_messages.Twitch.TwitchServerUptimeMessage.Replace("@countdownminutes", $"{_settings.Update.AnnounceMinutesBefore} {(_settings.Update.AnnounceMinutesBefore == 1 ? "Minute" : "Minutes")}").Replace("@uptime", $"{Math.Round(DateTime.Now.Subtract(process.StartTime).TotalHours, 2)} H {DateTime.Now.Subtract(process.StartTime).Minutes} M.").Replace("@restartinterval", $"{_messages.AnnounceIntervalInMinutes} {(_messages.AnnounceIntervalInMinutes == 1 ? "Minute" : "Minutes")}"));
+
+                                    _nextAnnounce = DateTime.Now.AddMinutes(_messages.AnnounceIntervalInMinutes);
+                                }
+                            }
+                        }
+
                         if (_settings.General.RestartServerAfterHours == 0) continue;
                         if (startTime.AddHours(_settings.General.RestartServerAfterHours) <= DateTime.Now)
                         {
                             if (_settings.Update.AnnounceTwitch || _settings.Update.AnnounceDiscord)
                             {
-                                var runningTime = DateTime.Now.Subtract(startTime);
-                                var announceMessage = $"Conan Server Automatic Restarts are set to run every {_settings.General.RestartServerAfterHours} Hours. The server has been up for {Math.Round(runningTime.TotalHours, 2)} H {runningTime.Minutes} M. The Server will restart in {_settings.Update.AnnounceMinutesBefore} {(_settings.Update.AnnounceMinutesBefore == 1 ? "Minute" : "Minutes")}.";
                                 if (_discordClient != null)
-                                    _discordClient.SendMessage(announceMessage);
+                                    _discordClient.SendMessage(_messages.Discord.DiscordServerRestartingMessage.Replace("@countdownminutes", $"{_settings.Update.AnnounceMinutesBefore} {(_settings.Update.AnnounceMinutesBefore == 1 ? "Minute" : "Minutes")}"));
                                 if (_twitchService != null)
-                                    _twitchService.SendMessage(announceMessage);
+                                    _twitchService.SendMessage(_messages.Twitch.TwitchServerRestartingMessage.Replace("@countdownminutes", $"{_settings.Update.AnnounceMinutesBefore} {(_settings.Update.AnnounceMinutesBefore == 1 ? "Minute" : "Minutes")}"));
                             }
                             if (_settings.Update.AnnounceMinutesBefore > 0)
                             {

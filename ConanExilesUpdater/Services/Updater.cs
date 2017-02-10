@@ -7,6 +7,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using ConanExilesUpdater.Models;
+using ConanExilesUpdater.Models.Messages;
 using Octokit;
 using Serilog;
 
@@ -18,18 +19,20 @@ namespace ConanExilesUpdater.Services
 
         private ManualResetEvent _quitEvent;
         private Settings _settings;
+        private Messages _messages;
         private TwitchService _twitchClient;
         private DiscordService _discordClient;
         private GeneralServices _general;
         private bool _runUpdates = true;
-        private const double _version = 1.8;
+        private const double _version = 1.9;
         #endregion
 
         #region Constructor
 
-        public Updater(Settings settings)
+        public Updater(Settings settings, Messages messages)
         {
             _settings = settings;
+            _messages = messages;
         }
 
         #endregion
@@ -72,7 +75,7 @@ namespace ConanExilesUpdater.Services
                     _twitchClient = new TwitchService(_settings);
                 if (_settings.Update.AnnounceDiscord)
                     _discordClient = new DiscordService(_settings);
-                _general = new GeneralServices(_settings, _discordClient, _twitchClient);
+                _general = new GeneralServices(_settings, _discordClient, _twitchClient, _messages);
                 _general.StartServices();
                 RunUpdateChecks();
                 _quitEvent.WaitOne();
@@ -305,16 +308,16 @@ namespace ConanExilesUpdater.Services
                 }
 
                 Log.Information("Detected SteamVersion as: {steamversion}. Your version is: {localVersion} An Update is required.", steamVersion, _settings.Update.InstalledBuild.ToString());
-                var message = $"New Conan Server Version Detected, Build: {steamVersion}. Server Update and Restart in {_settings.Update.AnnounceMinutesBefore} {(_settings.Update.AnnounceMinutesBefore == 1 ? "Minute" : "Minutes")}.";
+
                 if (_settings.Update.AnnounceTwitch)
                 {
                     if (_twitchClient != null)
-                        _twitchClient.SendMessage(message);
+                        _twitchClient.SendMessage(_messages.Twitch.TwitchUpdateMessage.Replace("@version",$"{steamVersion}").Replace("@announcebefore", $"{_settings.Update.AnnounceMinutesBefore}{(_settings.Update.AnnounceMinutesBefore == 1 ? "Minute" : "Minutes")}"));
                 }
                 if (_settings.Update.AnnounceDiscord)
                 {
                     if (_discordClient != null)
-                        _discordClient.SendMessage(message);
+                        _discordClient.SendMessage(_messages.Discord.DiscordUpdateMessage.Replace("@version", $"{steamVersion}").Replace("@announcebefore", $"{_settings.Update.AnnounceMinutesBefore}{(_settings.Update.AnnounceMinutesBefore == 1 ? "Minute" : "Minutes")}"));
                 }
                 _settings.Update.InstalledBuild = Convert.ToInt32(steamVersion);
                 Utils.SaveSettings(Program.StartupPath, _settings);
