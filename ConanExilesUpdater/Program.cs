@@ -1,8 +1,5 @@
 ﻿using System;
-using ConanExilesUpdater.Models;
-using ConanExilesUpdater.Models.Messages;
 using ConanExilesUpdater.Services;
-using Newtonsoft.Json;
 using Serilog;
 using Topshelf;
 
@@ -13,15 +10,13 @@ namespace ConanExilesUpdater
         #region Properties
 
         private static Updater _updater;
-        private static Settings _settings;
-        private static Messages _messages;
         public static string StartupPath;
 
         #endregion
 
         static void Main(string[] args)
         {
-            StartupPath = System.IO.Path.GetDirectoryName(Environment.GetCommandLineArgs()[0]);
+            StartupPath = new Uri(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase)).LocalPath;
 
             #region Setup Logging
 
@@ -33,35 +28,9 @@ namespace ConanExilesUpdater
 
             #endregion
 
-            #region Load Settings & Messages
-
-            if (System.IO.File.Exists("config.json"))
-            {
-                _settings = JsonConvert.DeserializeObject<Settings>(System.IO.File.ReadAllText("config.json"));
-                Log.Information("Loaded settings from file: {settings}", "config.json");
-            }
-            else
-            {
-                Utils.SaveSettings(StartupPath, new Settings());
-                Log.Information("No settings existed. Created new settings file: {settings}", "config.json");
-            }
-
-            if (System.IO.File.Exists("messages.json"))
-            {
-                _messages = JsonConvert.DeserializeObject<Messages>(System.IO.File.ReadAllText("messages.json"));
-                Log.Information("Loaded Messages from file: {settings}", "messages.json");
-            }
-            else
-            {
-                Utils.SaveMessages(StartupPath, new Messages());
-                Log.Information("No messages existed. Created new messages file: {settings}", "messages.json");
-            }
-
-            #endregion
-
             #region Updater Instance
 
-            _updater = new Updater(_settings, _messages);
+            _updater = new Updater(StartupPath);
 
             #endregion
 

@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ConanExilesUpdater.Models;
 using ConanExilesUpdater.Models.Messages;
+using Newtonsoft.Json;
 using Octokit;
 using Serilog;
 
@@ -24,15 +25,38 @@ namespace ConanExilesUpdater.Services
         private DiscordService _discordClient;
         private GeneralServices _general;
         private bool _runUpdates = true;
-        private const double _version = 1.91;
+        private const double _version = 1.92;
         #endregion
 
         #region Constructor
 
-        public Updater(Settings settings, Messages messages)
+        public Updater(string StartupPath)
         {
-            _settings = settings;
-            _messages = messages;
+            #region Load Settings & Messages
+
+            if (File.Exists(Path.Combine(StartupPath, "config.json")))
+            {
+                _settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(Path.Combine(StartupPath, "config.json")));
+                Log.Information("Loaded settings from file: {settings}", "config.json");
+            }
+            else
+            {
+                Utils.SaveSettings(StartupPath, new Settings());
+                Log.Information("No settings existed. Created new settings file: {settings}", "config.json");
+            }
+
+            if (File.Exists(Path.Combine(StartupPath, "messages.json")))
+            {
+                _messages = JsonConvert.DeserializeObject<Messages>(File.ReadAllText(Path.Combine(StartupPath, "messages.json")));
+                Log.Information("Loaded Messages from file: {settings}", "messages.json");
+            }
+            else
+            {
+                Utils.SaveMessages(StartupPath, new Messages());
+                Log.Information("No messages existed. Created new messages file: {settings}", "messages.json");
+            }
+
+            #endregion
         }
 
         #endregion
