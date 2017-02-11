@@ -25,7 +25,7 @@ namespace ConanExilesUpdater.Services
         private DiscordService _discordClient;
         private GeneralServices _general;
         private bool _runUpdates = true;
-        private const double _version = 1.92;
+        private const double _version = 1.93;
         #endregion
 
         #region Constructor
