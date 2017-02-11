@@ -260,7 +260,8 @@ namespace ConanExilesUpdater.Services
                 UseShellExecute = false
             };
             Process.Start(processStartInfo);
-            _general.StartServices();
+            if (_general != null)
+                _general.StartServices();
         }
 
         private bool DetectUpdate()
