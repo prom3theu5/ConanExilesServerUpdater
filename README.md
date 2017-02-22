@@ -1,3 +1,5 @@
+![appveyor](https://ci.appveyor.com/api/projects/status/x1jojcjpaeac0ryk?svg=true)
+
 # Conan Exiles Dedicated Server Updater / Service
 
 What can this do?:
