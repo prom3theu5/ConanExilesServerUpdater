@@ -1,4 +1,5 @@
-![appveyor](https://ci.appveyor.com/api/projects/status/x1jojcjpaeac0ryk?svg=true)
+[![Build status](https://ci.appveyor.com/api/projects/status/x1jojcjpaeac0ryk?svg=true)](https://ci.appveyor.com/project/prom3theu5/conanexilesserverupdater)
+
 
 # Conan Exiles Dedicated Server Updater / Service
 
