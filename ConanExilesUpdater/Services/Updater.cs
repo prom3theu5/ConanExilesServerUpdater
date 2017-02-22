@@ -25,7 +25,7 @@ namespace ConanExilesUpdater.Services
         private DiscordService _discordClient;
         private GeneralServices _general;
         private bool _runUpdates = true;
-        private const double _version = 1.93;
+        private const double _version = 1.94;
         #endregion
 
         #region Constructor
@@ -219,17 +219,17 @@ namespace ConanExilesUpdater.Services
                 await Task.Delay(_settings.Update.AnnounceMinutesBefore * 1000 * 60);
             }
 
-            var process = Process.GetProcesses().Where(c => c.ProcessName.Contains("ConanSandboxServer")).FirstOrDefault();
+            var process = Process.GetProcesses().Where(c => c.ProcessName.Contains("ConanSandboxServer.exe")).FirstOrDefault();
             if (process != null)
             {
                 // Until we have RCON - Use AutoHotKey.Interop to send ^C to the server for a clean shutdown.
                 Utils.TerminateServer();
-                await Task.Delay(30 * 1000);
-                process = Process.GetProcesses().Where(c => c.ProcessName.Contains("ConanSandboxServer")).FirstOrDefault();
+                await Task.Delay(60 * 1000);
+                process = Process.GetProcesses().Where(c => c.ProcessName.Contains("ConanSandboxServer.exe")).FirstOrDefault();
                 if (process != null)
                     process.Kill();
                 // Wait 30 seconds for a clean shutdown
-                await Task.Delay(30 * 1000);
+                await Task.Delay(60 * 1000);
             }
 
             DoServerUpdateInstall();
