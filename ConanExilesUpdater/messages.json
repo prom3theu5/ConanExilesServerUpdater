@@ -1,0 +1,15 @@
+{
+  "Discord": {
+    "DiscordUpdateMessage": "@here New Conan Server Version Detected, Build: @version. The server will restart in @announcebefore.",
+    "DiscordServerUptimeMessage": "The Conan server has been running for @uptime. Restarts are scheduled every @restartinterval. The server will restart in @countdownminutes.",
+    "DiscordServerRestartingMessage": "@here The Conan server will restart in @countdownminutes. It will show online in a few minutes.",
+    "DiscordServerNotRunning": "@here The Conan server was not detected as running. It will start now, and be online within 2-3 Minutes"
+  },
+  "Twitch": {
+    "TwitchUpdateMessage": "New Conan Server Version Detected, Build: @version. The server will restart in @announcebefore.",
+    "TwitchServerUptimeMessage": "The Conan server has been running for @uptime. Restarts are scheduled every @restartinterval. The server will restart in @countdownminutes.",
+    "TwitchServerRestartingMessage": "The Conan Server is now restarting. It will show online in a few minutes",
+    "TwitchServerNotRunning": "The Conan server was not detected as running. It will start now, and be online within 2-3 Minutes"
+  },
+  "AnnounceIntervalInMinutes": 0
+}

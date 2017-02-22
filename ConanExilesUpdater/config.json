@@ -1,0 +1,37 @@
+﻿{
+  "Twitch": {
+    "OAuth": "",
+    "Username": "",
+    "Channel": 0
+  },
+  "Discord": {
+    "DiscordToken": "",
+    "ChannelId": 0
+  },
+  "Conan": {
+    "FolderPath": "c:\\conanserver\\",
+    "Executable": "ConanSandboxServer.exe",
+    "StartupParameters": "ConanSandbox?Multihome=X.X.X.X?GameServerPort=27015?GameServerQueryPort=27016?ServerName=YOURSERVERNAME?MaxPlayers=50?listen?AdminPassword=YOURADMINPASSWORD -nosteamclient -game -server",
+    "RaidingProtectionHoursEnabled": false,
+    "RaidingStartHour": 0,
+    "RaidingLengthInHours": 0,
+    "AvatarsEnabledCertainHours": false,
+    "AvatarActivationHour": 0,
+    "AvatarsActiveLengthInHours": 0
+  },
+  "Update": {
+    "ShouldInstallSteamCmdIfMissing": false,
+    "ShouldInstallConanServerIfMissing": false,
+    "SteamCmdPath": "c:\\steamcmd\\",
+    "AnnounceDiscord": false,
+    "AnnounceTwitch": false,
+    "AnnounceMinutesBefore": 5,
+    "UpdateCheckInterval": 5,
+    "InstalledBuild": 0,
+    "UpdateOnLaunch": true
+  },
+  "General": {
+    "ShouldRestartConanOnNotRunning": true,
+    "RestartServerAfterHours": 0
+  }
+}
