@@ -254,11 +254,31 @@ namespace ConanExilesUpdater.Services
                 #endregion
 
                 if (changed)
-                  serverSettings.Flush();
+                {
+                    serverSettings.Flush();
+                    if (_settings.General.ShouldRestartConanOnNotRunning)
+                        StopConanServer();
+                }
             }
         }
 
         #endregion
+
+        private void StopConanServer()
+        {
+            var process = Process.GetProcesses().Where(c => c.ProcessName.Contains("ConanSandboxServer.exe")).FirstOrDefault();
+            if (process != null)
+            {
+                // Until we have RCON - Use AutoHotKey.Interop to send ^C to the server for a clean shutdown.
+                Utils.TerminateServer();
+                Thread.Sleep(60000);
+                process = Process.GetProcesses().Where(c => c.ProcessName.Contains("ConanSandboxServer.exe")).FirstOrDefault();
+                if (process != null)
+                    process.Kill();
+                // Wait 60 seconds for a clean shutdown
+                Thread.Sleep(60000);
+            }
+        }
 
     }
 }

@@ -25,7 +25,7 @@ namespace ConanExilesUpdater.Services
         private DiscordService _discordClient;
         private GeneralServices _general;
         private bool _runUpdates = true;
-        private const double _version = 1.94;
+        private const double _version = 1.95;
         #endregion
 
         #region Constructor
@@ -228,7 +228,7 @@ namespace ConanExilesUpdater.Services
                 process = Process.GetProcesses().Where(c => c.ProcessName.Contains("ConanSandboxServer.exe")).FirstOrDefault();
                 if (process != null)
                     process.Kill();
-                // Wait 30 seconds for a clean shutdown
+                // Wait 60 seconds for a clean shutdown
                 await Task.Delay(60 * 1000);
             }
 
@@ -249,7 +249,7 @@ namespace ConanExilesUpdater.Services
             var process = Process.Start(processStartInfo);
             process.WaitForExit();
         }
-
+        
         private void StartConan()
         {
             var processStartInfo = new ProcessStartInfo
